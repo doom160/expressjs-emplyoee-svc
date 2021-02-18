@@ -67,10 +67,6 @@ public class UserController {
         users = userService.getFilteredUsers(params);
       }
 
-      if (users.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-
       Map<String, List<User>> map = new HashMap<>();
       map.put("result",users);
       return new ResponseEntity<>(map, HttpStatus.OK);

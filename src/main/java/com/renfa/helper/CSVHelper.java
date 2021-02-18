@@ -42,7 +42,7 @@ public class CSVHelper {
       List<User> users = new ArrayList<User>();
 
       Iterable<CSVRecord> csvRecords = csvParser.getRecords();
-
+      
       for (CSVRecord csvRecord : csvRecords) {
         if(csvRecord.size() != HEADERS.length) {
           throw new FileUploadContentException(String.format("Following record has %d data instead of %d: %s", csvRecord.size(), HEADERS.length, csvRecord.toString()));
@@ -51,8 +51,7 @@ public class CSVHelper {
               csvRecord.get(HEADERS[0]),
               csvRecord.get(HEADERS[1]),
               csvRecord.get(HEADERS[2]),
-              Float.parseFloat(csvRecord.get(HEADERS[3]))
-            );
+              Float.parseFloat(csvRecord.get(HEADERS[3])));
         
         if(user.getSalary() < 0) {
           throw new FileUploadContentException(String.format("User %s has salary %.2f", user.getName(), user.getSalary()));
@@ -60,11 +59,19 @@ public class CSVHelper {
         users.add(user);
       }
 
+      if(users.size() == 0){
+        throw new FileUploadContentException(String.format("File is empty, please upload new file"));
+      }
+
       return users;
+    } catch (FileUploadContentException e) {
+      throw new RuntimeException("Fail to parse CSV file due to data error: " + e.getMessage());
+    } catch (NumberFormatException e) {
+      throw new RuntimeException("Fail to parse CSV file when parsing salary: " + e.getMessage());
     } catch (IOException e) {
       throw new RuntimeException("Fail to parse CSV file: " + e.getMessage());
     } catch (Exception e) {
-      throw new RuntimeException("Fail to parse CSV file: " + e.getMessage());
+      throw new RuntimeException("Fail to parse CSV file due to unknown error: " + e.getMessage());
     }
   }
 
