@@ -1,5 +1,6 @@
 package com.renfa.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import com.renfa.model.User;
 
 @CrossOrigin("http://localhost:8081")
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UserController {
 
   @Autowired
@@ -36,7 +37,7 @@ public class UserController {
   @Autowired
   UserService userService;
 
-  @PostMapping("/upload")
+  @PostMapping("/users/upload")
   public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
     String message = "";
 
@@ -47,7 +48,7 @@ public class UserController {
         message = "Uploaded the file successfully: " + file.getOriginalFilename();
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
       } catch (Exception e) {
-        message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+        message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
       }
     }
@@ -56,10 +57,15 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
   }
 
-  @GetMapping("/")
-  public ResponseEntity<Map<String, List<User>>> getAllUsers() {
+  @GetMapping("/users")
+  public ResponseEntity<Map<String, List<User>>> getAllUsers(@RequestParam Map<String, String> params) {
     try {
-      List<User> users = userService.getAllUsers();
+      List<User> users = new ArrayList<User>();
+      if(params.size() == 0){
+        users = userService.getAllUsers();
+      } else {
+        users = userService.getFilteredUsers(params);
+      }
 
       if (users.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -73,7 +79,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("/download")
+  @GetMapping("/users/download")
   public ResponseEntity<Resource> getFile() {
     String filename = "users.csv";
     InputStreamResource file = new InputStreamResource(fileService.load());

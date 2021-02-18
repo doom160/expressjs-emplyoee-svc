@@ -23,7 +23,7 @@ import com.renfa.model.User;
 
 public class CSVHelper {
   public static String TYPE = "text/csv";
-  static String[] HEADERS = { "id", "login", "name", "salary" };
+  public static String[] HEADERS = { "id", "login", "name", "salary" };
 
   public static boolean hasCSVFormat(MultipartFile file) {
 
@@ -37,13 +37,16 @@ public class CSVHelper {
   public static List<User> csvToUsers(InputStream is) {
     try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         CSVParser csvParser = new CSVParser(fileReader,
-            CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+            CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim().withCommentMarker('#'));) {
 
       List<User> users = new ArrayList<User>();
 
       Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
       for (CSVRecord csvRecord : csvRecords) {
+        if(csvRecord.size() != HEADERS.length) {
+          throw new FileUploadContentException(String.format("Following record has %d data instead of %d: %s", csvRecord.size(), HEADERS.length, csvRecord.toString()));
+        }
         User user = new User(
               csvRecord.get(HEADERS[0]),
               csvRecord.get(HEADERS[1]),
@@ -52,7 +55,7 @@ public class CSVHelper {
             );
         
         if(user.getSalary() < 0) {
-          throw new FileUploadContentException(String.format("User %s has salary $.2f", user.getName(), user.getSalary()));
+          throw new FileUploadContentException(String.format("User %s has salary %.2f", user.getName(), user.getSalary()));
         }
         users.add(user);
       }
@@ -69,7 +72,12 @@ public class CSVHelper {
     final CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
 
     try (ByteArrayOutputStream out = new ByteArrayOutputStream();
-        CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);) {
+      CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);) {
+      
+      //add Header
+      csvPrinter.printRecord(Arrays.asList(HEADERS));
+
+      //add Data
       for (User user : users) {
         List<String> data = Arrays.asList(
               user.getId(),
@@ -87,5 +95,4 @@ public class CSVHelper {
       throw new RuntimeException("Fail to import data to CSV file: " + e.getMessage());
     }
   }
-
 }
