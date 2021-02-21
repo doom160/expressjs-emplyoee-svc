@@ -26,6 +26,68 @@ public class UserService {
     return repository.findAll();
   }
 
+  public User findById(String id){
+    try {
+      List<User> result = repository.findById(id);
+
+      if(result.size() == 0){
+        throw new UserQueryException("No such user");
+      }
+
+      return repository.findById(id).get(0);
+    } catch (UserQueryException e){
+      throw new RuntimeException("Fail query for result: " + e.getMessage());
+    }
+  }
+
+  public void deleteById(String id){
+    try {
+      repository.deleteById(id);
+    } catch (Exception e){
+      throw new RuntimeException(String.format("Fail to delete %s : %s", id, e.getMessage()));
+    }
+  }
+
+  public void addUser(User user){
+    try {
+      if(user.getSalary() < 0){
+        throw new UserQueryException("User salary should be 0 or more");
+      }
+      if(user.getId() ==  null){
+        throw new UserQueryException("User id is missing");
+      }
+      if(user.getName() ==  null){
+        throw new UserQueryException("User name is missing");
+      }
+      if(user.getLogin() ==  null){
+        throw new UserQueryException("User login is missing");
+      }
+
+      repository.save(user);
+    } catch (Exception e){
+      throw new RuntimeException(String.format("Fail to save user %s : %s", user.getId(), e.getMessage()));
+    }
+  }
+
+  public void updateUser(User newUser, String id){
+
+    User user = findById(id);
+    if(newUser.getName() != null) {
+      user.setName(newUser.getName());
+    }
+    if(newUser.getSalary() >= 0 ) {
+      user.setSalary(newUser.getSalary());
+    }
+    if(newUser.getLogin() != null) {
+      user.setLogin(newUser.getLogin());
+    }
+    try {
+      repository.save(user);
+    } catch (Exception e){
+      throw new RuntimeException(String.format("Fail to update user %s : %s", user.getId(), e.getMessage()));
+    }
+  }
+
   public List<User> getFilteredUsers(Map<String, String> params) {
     try {
       float minSalary = params.containsKey("minSalary") ? Float.parseFloat(params.get("minSalary")): 0f;
