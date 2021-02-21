@@ -75,7 +75,7 @@ public class UserController {
       map.put("result",users);
       return new ResponseEntity<>(map, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -95,7 +95,7 @@ public class UserController {
     try {
       return new ResponseEntity<>(userService.findById(id).toString(), HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(String.format("{error: \"%s\"}" , e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -105,7 +105,7 @@ public class UserController {
       userService.deleteById(id);
       return new ResponseEntity<>(String.format("{message: \"Employee ID %s is successfully deleted\"}" , id), HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(String.format("{error: \"%s\"}" , e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -115,7 +115,7 @@ public class UserController {
       userService.addUser(user);
       return new ResponseEntity<>(String.format("{message: \"ID %s is successfully added\"}" , user.getId()), HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(String.format("{error: \"%s\"}" , e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -125,7 +125,7 @@ public class UserController {
        userService.updateUser(user, id);
        return new ResponseEntity<>(String.format("{message: \"ID %s is successfully updated\"}", id), HttpStatus.OK);
      } catch (Exception e) {
-       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+       return new ResponseEntity<>(String.format("{error: \"%s\"}" , e.getMessage()), HttpStatus.BAD_REQUEST);
      }
   }
 }

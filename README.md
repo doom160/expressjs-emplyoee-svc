@@ -7,17 +7,17 @@ Feature - Loading of CSV file and save into Database
 mvn clean spring-boot:run
 ```
 
-* **URL**
+---
 
+* **URL**
   `/users`
 
 * **Method:**
-  
-  <_The request type_>
 
-  `GET`
+  `GET` | `POST`
   
 *  **URL Params**
+    When no parameters are provided, all results are fetched.
 
    **Optional:**
  
@@ -29,31 +29,83 @@ mvn clean spring-boot:run
 
 * **Data Params**
 
-  <_If making a post request, what should the body payload look like? URL Params rules apply here too._>
+  ```
+  {
+    "id": "e9999",
+    "login": "test",
+    "salary": "1020.00",
+    "name": "Test User"
+  }
+  ```
 
 * **Success Response:**
-  
-  <_What should the status code be on success and is there any returned data? This is useful when people need to to know what their callbacks should expect!_>
-
-  * **Code:** 200 <br />
-    **Content:** `{ id : 12 }`
+  * **Code:** 200
+    **Content:** `{"result":[{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0},{"id":"e0002","login":"rwesley","name":"Ron Weasley","salary":19234.5}]}`
  
 * **Error Response:**
 
-  <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
+  * **Code:** 400 BAD REQUEST
+    **Content:** `{ error : "ERROR MESSAGE" }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "Log in" }`
+---
 
-  OR
+* **URL**
+  `/users/upload`
 
-  * **Code:** 422 UNPROCESSABLE ENTRY <br />
-    **Content:** `{ error : "Email Invalid" }`
+* **Method:**
+    `POST`
 
-* **Sample Call:**
+* **Header:**
+    `"Content-Type": "text/csv"`
 
-  <_Just a sample call to your endpoint in a runnable format ($.ajax call or a curl request) - this makes life easier and more predictable._> 
+* **Data Params**
 
-* **Notes:**
+  ```
+  {
+    "file": "@File.csv
+  }
+  ```
 
-  <_This is where all uncertainties, commentary, discussion etc. can go. I recommend timestamping and identifying oneself when leaving comments here._> 
+  File.csv
+  ```
+  id,login,name,salary
+  e0001,hpotter,Harry Potter,1234.00
+  #comments works here too
+  e0002,rwesley,Ron Weasley,19234.50
+  ```
+
+
+* **Success Response:**
+  * **Code:** 200
+    **Content:** `{"message": "Uploaded the file successfully: data.csv"}`
+ 
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST
+    **Content:** `{ message : "ERROR MESSAGE" }`
+
+---
+
+* **URL**
+  `/users/{id}`
+
+* **Method:**
+    `GET` | `PATCH` | `DELETE`
+
+
+* **Success Response:**
+    `GET`
+  * **Code:** 200
+    **Content:** `{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0}`
+
+  * **Code:** 400
+    **Content:** `{"error":"message"}`
+
+  </br>
+
+    `PATCH` | `DELETE`
+  * **Code:** 200
+    **Content:** `{message:"Employee ID %s is successfully deleted"}`
+ 
+   * **Code:** 400
+    **Content:** `{"error":"message"}`
