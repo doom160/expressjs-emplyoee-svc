@@ -99,7 +99,7 @@ mvn clean spring-boot:run
     **Content:** `{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0}`
 
   * **Code:** 400
-    **Content:** `{"error":"message"}`
+    **Content:** `{"message":"message"}`
 
   </br>
 
@@ -108,4 +108,4 @@ mvn clean spring-boot:run
     **Content:** `{message:"Employee ID %s is successfully deleted"}`
  
    * **Code:** 400
-    **Content:** `{"error":"message"}`
+    **Content:** `{"message":"message"}`

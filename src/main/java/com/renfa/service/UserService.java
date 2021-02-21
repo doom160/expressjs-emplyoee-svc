@@ -5,11 +5,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import com.renfa.helper.CSVHelper;
@@ -64,27 +62,38 @@ public class UserService {
       }
 
       repository.save(user);
-    } catch (Exception e){
+      
+    } 
+    catch (UserQueryException e){
       throw new RuntimeException(String.format("Fail to save user %s : %s", user.getId(), e.getMessage()));
+    } catch (Exception e){
+      throw new RuntimeException(String.format("Fail to save user %s", user.getId()));
     }
   }
 
   public void updateUser(User newUser, String id){
-
     User user = findById(id);
-    if(newUser.getName() != null) {
-      user.setName(newUser.getName());
-    }
-    if(newUser.getSalary() >= 0 ) {
-      user.setSalary(newUser.getSalary());
-    }
-    if(newUser.getLogin() != null) {
-      user.setLogin(newUser.getLogin());
-    }
     try {
+      if(newUser.getId() != null) {
+        user.setId(newUser.getId());
+      }
+      if(newUser.getName() != null) {
+        user.setName(newUser.getName());
+      }
+      if(newUser.getSalary() >= 0 ) {
+        user.setSalary(newUser.getSalary());
+      } else {
+        throw new UserQueryException("User salary should be 0 or more");
+      }
+      if(newUser.getLogin() != null) {
+        user.setLogin(newUser.getLogin());
+      }
+
       repository.save(user);
+    } catch (UserQueryException e){
+      throw new RuntimeException(String.format("Fail to update user %s: %s", user.getId(), e.getMessage()));
     } catch (Exception e){
-      throw new RuntimeException(String.format("Fail to update user %s : %s", user.getId(), e.getMessage()));
+      throw new RuntimeException(String.format("Fail to update user %s", user.getId()));
     }
   }
 
@@ -112,7 +121,7 @@ public class UserService {
     } catch (NumberFormatException e) {
       throw new RuntimeException("Invalid sort parameter:" + e.getMessage());
     } catch (Exception e){
-      throw new RuntimeException("Fail query for result: " + e.getMessage());
+      throw new RuntimeException("Fail query for result");
     }
   }
 
