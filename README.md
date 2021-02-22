@@ -1,10 +1,11 @@
 **Spring Boot - User Service**
 ----
 Feature - Loading of CSV file and save into Database
+Select, Insert, Update, Delete records
 
 ### Run Spring Boot application
 ```
-mvn clean spring-boot:run
+mvn clean package spring-boot:run
 ```
 
 ---
@@ -82,7 +83,7 @@ mvn clean spring-boot:run
 * **Error Response:**
 
   * **Code:** 400 BAD REQUEST
-    **Content:** `{ message : "ERROR MESSAGE" }`
+    **Content:** `{ "message" : "ERROR MESSAGE" }`
 
 ---
 
@@ -93,7 +94,7 @@ mvn clean spring-boot:run
     `GET` | `PATCH` | `DELETE`
 
 
-* **Success Response:**
+* **Response:**
     `GET`
   * **Code:** 200
     **Content:** `{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0}`
@@ -105,7 +106,27 @@ mvn clean spring-boot:run
 
     `PATCH` | `DELETE`
   * **Code:** 200
-    **Content:** `{message:"Employee ID %s is successfully deleted"}`
+    **Content:** `{"message":"Employee ID %s is successfully deleted"}`
  
    * **Code:** 400
     **Content:** `{"message":"message"}`
+
+
+---
+
+* **URL**
+  `/users/download`
+
+* **Method:**
+    `GET`
+
+* **Response:**
+    `GET`
+  * **Code:** 200
+    **Content:** users.csv
+    ```
+    id,login,name,salary
+    e0001,username_a_0001,User Name is not number 0001,10001.0
+    e0002,username_a_0002,User Name is not number 0002,10002.0
+    ```
+
