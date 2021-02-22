@@ -22,9 +22,9 @@ mvn clean package spring-boot:run
 
    **Optional:**
  
-   `minSalary=[float]`: Lower bound of salary filtered result. Default value: **0**
-   `maxSalary=[float]`: Upper bound of salary filtered result. Default value: **Integer.MAX_VALUE**
-   `limit=[int]`: Size of subset result per request. Default value: **30**
+   `minSalary=[float]`: Lower bound of salary filtered result. Default value: **0**\
+   `maxSalary=[float]`: Upper bound of salary filtered result. Default value: **Integer.MAX_VALUE**\
+   `limit=[int]`: Size of subset result per request. Default value: **30**\
    `offSet=[int]`: Pagination of result based on the limit size. Default value: **0**
 
 
@@ -40,12 +40,12 @@ mvn clean package spring-boot:run
   ```
 
 * **Success Response:**
-  * **Code:** 200
+  * **Code:** 200\
     **Content:** `{"result":[{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0},{"id":"e0002","login":"rwesley","name":"Ron Weasley","salary":19234.5}]}`
  
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST
+  * **Code:** 400 BAD REQUEST\
     **Content:** `{ error : "ERROR MESSAGE" }`
 
 ---
@@ -77,12 +77,12 @@ mvn clean package spring-boot:run
 
 
 * **Success Response:**
-  * **Code:** 200
+  * **Code:** 200\
     **Content:** `{"message": "Uploaded the file successfully: data.csv"}`
  
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST
+  * **Code:** 400 BAD REQUEST\
     **Content:** `{ "message" : "ERROR MESSAGE" }`
 
 ---
@@ -96,19 +96,19 @@ mvn clean package spring-boot:run
 
 * **Response:**
     `GET`
-  * **Code:** 200
+  * **Code:** 200\
     **Content:** `{"id":"e0001","login":"hpotter","name":"Harry Potter","salary":1234.0}`
 
-  * **Code:** 400
+  * **Code:** 400\
     **Content:** `{"message":"message"}`
 
   </br>
 
     `PATCH` | `DELETE`
-  * **Code:** 200
+  * **Code:** 200\
     **Content:** `{"message":"Employee ID %s is successfully deleted"}`
  
-   * **Code:** 400
+   * **Code:** 400\
     **Content:** `{"message":"message"}`
 
 
