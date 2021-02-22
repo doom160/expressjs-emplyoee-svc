@@ -4,6 +4,8 @@ Feature - Loading of CSV file and save into Database\
 Select, Insert, Update, Delete records
 
 ### Run Spring Boot application
+Requirement: Java 11
+
 ```
 mvn clean package spring-boot:run
 ```
