@@ -22,12 +22,13 @@ import com.renfa.exception.FileUploadContentException;
 import com.renfa.model.User;
 
 public class CSVHelper {
-  public static String TYPE = "text/csv";
+  public static String[] TYPE = {"text/csv", "application/vnd.ms-excel"};
+
   public static String[] HEADERS = { "id", "login", "name", "salary" };
 
   public static boolean hasCSVFormat(MultipartFile file) {
 
-    if (!TYPE.equals(file.getContentType())) {
+    if (!Arrays.stream(TYPE).anyMatch(file.getContentType()::equals)) {
       return false;
     }
 

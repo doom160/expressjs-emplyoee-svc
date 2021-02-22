@@ -30,7 +30,7 @@ import com.renfa.helper.CSVHelper;
 import com.renfa.message.ResponseMessage;
 import com.renfa.model.User;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 @Controller
 @RequestMapping("/")
 public class UserController {
@@ -57,6 +57,8 @@ public class UserController {
       }
     }
 
+    System.out.println(file.getContentType());
+    System.out.println(file.toString());
     message = "Please upload a csv file!";
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
   }
