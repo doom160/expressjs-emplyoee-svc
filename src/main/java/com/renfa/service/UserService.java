@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,8 +22,11 @@ public class UserService {
   @Autowired
   UserRepository repository;
 
-  public List<User> getAllUsers() {
-    return repository.findAll();
+  public Page<User> getAllUsers() {
+    List<User> userList = repository.findAll();
+    
+
+    return new PageImpl<User>(userList, PageRequest.of(0, userList.size(),Sort.by(Direction.ASC, "id")), userList.size());
   }
 
   public User findById(String id){
@@ -97,7 +102,7 @@ public class UserService {
     }
   }
 
-  public List<User> getFilteredUsers(Map<String, String> params) {
+  public Page<User> getFilteredUsers(Map<String, String> params) {
     try {
       float minSalary = params.containsKey("minSalary") ? Float.parseFloat(params.get("minSalary")): 0f;
       float maxSalary = params.containsKey("maxSalary") ? Float.parseFloat(params.get("maxSalary")): (float)Integer.MAX_VALUE;

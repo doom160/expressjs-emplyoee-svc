@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
 
 import com.renfa.service.CSVService;
 import com.renfa.service.UserService;
@@ -57,24 +58,28 @@ public class UserController {
       }
     }
 
-    System.out.println(file.getContentType());
-    System.out.println(file.toString());
     message = "Please upload a csv file!";
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
   }
 
   @GetMapping("/users")
-  public ResponseEntity<Map<String, List<User>>> getAllUsers(@RequestParam Map<String, String> params) {
+  public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam Map<String, String> params) {
     try {
-      List<User> users = new ArrayList<User>();
+      Page<User> users;
       if(params.size() == 0){
         users = userService.getAllUsers();
       } else {
         users = userService.getFilteredUsers(params);
       }
 
-      Map<String, List<User>> map = new HashMap<>();
-      map.put("result",users);
+      Map<String, Object> map = new HashMap<>();
+      Map<String, Object> page = new HashMap<>();
+      page.put("total_item", users.getTotalElements());
+      page.put("total_page", users.getTotalPages());
+      page.put("page_no", users.getNumber());
+      page.put("page_size", users.getSize());
+      map.put("result",users.getContent());
+      map.put("page",page);
       return new ResponseEntity<>(map, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
